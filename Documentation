@@ -1,3 +1,16 @@
+This is a language that I invented in early 2012 to be a simple golfing language. By this, I mean that there is very little to no operator overloading. The operators are also simpler and fewer in number than most modern golfing languages.
+
+The most interesting features of this language are its data structures. There are two stacks and a hash that are used to store information.
+
+The m-stack is the main stack, where arithmetic and most other operations take place. When data is inputted or printed, this is where it goes or is retrieved from.
+
+The c-stack is the control stack. This is where boolean arithmetic takes place. The top values of the c-stack are used by If and While loops as the condition.
+
+The hash is where variables are stored. The ; and ~ store and retrieve data from the hash, respectively.
+
+Element is a very weakly typed language. It uses Perl's ability to freely interpret numbers as strings and vice-versa.
+
+
 OP    the operator.  Each operator is a single character
 STACK tells what stacks are affected and how many are popped or pushed
       "o" stands for "other effect"
