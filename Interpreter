@@ -1,0 +1,109 @@
+my %ops = (
+    '_' => '$a=<>;push(@m,$a);',
+    '`' => '$a=pop@m;print$a;',
+    ';' => '$a=pop@m;$b=pop@m;$hash{$a}=$b;',
+    '~' => '$a=pop@m;push(@m,$hash{$a});',
+    ':' => '$a=pop@m;$b=pop@m;for(1..$a){push(@m,$b);};',
+    '.' => '$a=pop@m;$b=pop@m;push(@m,$b.$a);',
+    "'" => '$a=pop@m;push(@c,$a);',
+    '"' => '$a=pop@c;push(@m,$a);',
+    '$' => '$a=pop@m;push(@m,length$a);',
+    ')' => '$a=pop@m;$b=chop$a;push(@m,$a);push(@m,$b);',
+    '(' => '$a=pop@m;$a=reverse$a;$b=chop$a;$a=reverse$a;push(@m,$a);push(@m,$b);',
+    '#' => '$a=pop@m;',
+    '+' => '$a=pop@m;$b=pop@m;push(@m,$b+$a);',
+    '-' => '$a=pop@m;push(@m,-$a);',
+    '*' => '$a=pop@m;$b=pop@m;push(@m,$b*$a);',
+    '%' => '$a=pop@m;$b=pop@m;push(@m,$b%$a);',
+    '^' => '$a=pop@m;$b=pop@m;push(@m,$b**$a);',
+    '?' => '$a=pop@m;if($a){push(@c,1)}else{push(@c,0)};',
+    '!' => '$a=pop@c;if($a){push(@c,0)}else{push(@c,1)};',
+    '&' => '$a=pop@c;$b=pop@c;if($a && $b){push(@c,1)}else{push(@c,0)};',
+    '|' => '$a=pop@c;$b=pop@c;if($a || $b){push(@c,1)}else{push(@c,0)};',
+    '=' => '$a=pop@m;$b=pop@m;if($a eq $b){push(@c,1)}else{push(@c,0)};',
+    '>' => '$a=pop@m;$b=pop@m;if($b > $a){push(@c,1)}else{push(@c,0)};',
+    '<' => '$a=pop@m;$b=pop@m;if($b < $a){push(@c,1)}else{push(@c,0)};',
+    '[' => '$a=pop@c;push(@c,$a);for(1..$a){',
+    ']' => '}',
+    '{' => 'while($c[$#c]){',
+    '}' => '}',
+    ',' => '$a=pop@m;push(@m,chr($a));push(@m,ord($a));',
+    '@' => '$a=pop@m;$b=pop@m;for(1..$b){push(@temp,pop@m)}$c=pop@m;for(1..$b){push(@m,pop@temp)}for(1..$a){push(@temp,pop@m)}push(@m,$c);for(1..$a){push(@m,pop@temp)}',
+    ' ' => ' ',
+    "\n"=> ' ',
+);
+
+my $repl = 0;
+
+print 'Would you like to run each program more than once? (y/n) ';
+chomp(my $response = <>);
+$response = chop($response = reverse $response);
+if($response eq "Y" || $response eq "y")
+{
+    $repl = 1;
+}
+
+my $showcompiled = 0;
+
+print 'Would you like the "compiled" Perl code of every Element program? (y/n) ';
+chomp($response = <>);
+$response = chop($response = reverse $response);
+if($response eq "Y" || $response eq "y")
+{
+    $showcompiled = 1;
+}
+
+while(1)
+{
+    print "PROGRAM:\n";
+    
+    #these next few lines may be subject to system-dependent newline issues
+    $/ = "\n\n";
+    chop(my $original=<>);
+    $/ = "\n";
+    $original = reverse $original;
+    
+    
+    my $compiled = "";
+    my $pushstring = "";
+    while($original){
+        my $char = chop $original;
+        my $pushflag = 1;
+        my $comp = "";
+        if(exists $ops{$char}){
+            $comp = $ops{$char};
+        }
+        else {
+            $pushflag = 0;
+        }
+        if($char eq '\\'){
+            $char = chop $original;
+        }
+        if($pushflag==1 && $pushstring ne ""){
+            $compiled .= 'push(@m,\'' . $pushstring . '\');'; 
+            $pushstring = "";
+        }
+        elsif($pushflag == 0){
+            if($char eq "'" || $char eq '\\'){
+                $char = '\\'.$char;
+            }
+            $pushstring .= $char;
+        }
+        $compiled .= $comp;
+    }
+    if($showcompiled){
+        print "$compiled\n";
+    }
+    my $reps = 1;
+    if($repl){
+        print 'How many times to run? ';
+        $reps = <>;
+    }
+    for(1..$reps){
+        print "INPUT:\n";
+        my @m;  #initialize variables for Element program to run
+        my @c;
+        my %hash;
+        eval $compiled;
+    }
+}
