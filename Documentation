@@ -1,0 +1,51 @@
+OP    the operator.  Each operator is a single character
+STACK tells what stacks are affected and how many are popped or pushed
+      "o" stands for "other effect"
+HASH  tells if it involves the hash
+x & y represent two values that are already on the stack, so the effect of
+      the operator can be more easily described
+
+OP     STACK  HASH   DESCRIPTION
+text     ->m         --whenever a bare word appears, it pushes that string onto 
+                       the main stack
+_       o->m         --inputs a word and pushes onto main stack
+`       m->o         --output.  pops from main stack and prints
+xy;    mm->    yes   --variable assignment.  the top stack element y is assigned 
+                       the value x
+~       m->m   yes   --variable retrieval.  pops from main stack, pushes contents 
+                       of the element with that name
+x?      m->c         --test. pops x and pushes 0 onto control stack if x is '0' or 
+                       an empty string, else pushes 1
+><=     m->c         --comparison. pops two numbers off of stack and performs 
+                       test, pushes 1 onto control stack if true and 0 if false
+'       m->c         --pops from main stack and pushes onto control stack
+"       c->m         --pops from control stack and pushes onto main stack
+&|     cc->c         --AND/OR. pops two items from control stack, performs and/or 
+                       respectively, and pushes result back onto control stack
+!       c->c         --NOT. pops a number off of control stack, pushes 1 if 0 or 
+                       empty string, 0 otherwise
+[]       c           --FOR statement (view the top number number from control stack 
+                       and eval those many times)
+{}       c           --WHILE (loop until top number on control stack is 0, also 
+                       does not pop)
+#       m->          --discard. pops from main stack and destroys
+(       m->mm        --pops from main stack, removes first character, pushes the 
+                       remaining string onto stack, and pushes the removed character 
+                       onto stack
+)       m->mm        --pops from main stack, removes last character, pushes the 
+                       remaining string onto stack, and pushes the removed character 
+                       onto stack
++-*/%^ mm->m         --arithmetic. pops two most recent items, adds/negates
+                       /multiplies/divides/modulates/exponentiates them, and places 
+                       the result on the stack 
+xy@    mm->o         --move. pops x and y and moves xth thing in stack to move to 
+                       place y in stack
+x$      m->m         --length. pops x and pushs length of x onto the stack
+xy:    mm->o         --duplication. pops x and y and pushes x onto the stack y times
+xy.    mm->m         --concatination. pops x and y and pushes x concatonated with y
+\        o           --escapes out of next character, so it isn't an operator and can
+                       be pushed onto the stack
+,      m->mm         --character conversion. pops from main stack, coverts it to char
+                       and pushes, and converts to num and pushes
+Newlines and spaces separate different elements to be pushed 
+onto the stack individually, but can pushed onto the stack using \
