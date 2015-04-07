@@ -1,3 +1,5 @@
+print "Version 1.1\n";
+
 my %ops = (
     '_' => '$a=<>;push(@m,$a);',
     '`' => '$a=pop@m;print$a;',
