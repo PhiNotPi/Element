@@ -57,7 +57,7 @@ if($response eq "Y" || $response eq "y")
 
 while(1)
 {
-    print "PROGRAM:\n";
+    print "\nPROGRAM:\n";
     
     #these next few lines may be subject to system-dependent newline issues
     $/ = "\n\n";
@@ -102,7 +102,7 @@ while(1)
         $reps = <>;
     }
     for(1..$reps){
-        print "INPUT:\n";
+        print "\nINPUT:\n";
         my @m;  #initialize variables for Element program to run
         my @c;
         my %hash;
